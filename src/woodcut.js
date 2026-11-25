@@ -10,7 +10,7 @@
   const blockSize = 384;
   const defaults = Object.freeze({ seed: '黑木' });
   const ink = [24, 22, 17];
-  const paperColor = '#f8efdd';
+  const paperColor = '#f8ecd7';
   const byId = new Map(motifs.map(motif => [motif.id, motif]));
   const blocks = new WeakMap();
   const papers = new WeakMap();
@@ -18,8 +18,10 @@
   function createWoodcutLayout(seed) {
     seed = String(seed ?? '').trim() || defaults.seed;
     const first = byId.get(seed);
-    const presets = seed === defaults.seed ? motifs.slice(0, 24) : motifs.filter(motif => motif === first);
-    return createLayout(motifs, presets, randomFrom(seed + '|woodcut'));
+    const useProof = seed === defaults.seed;
+    const presets = useProof ? motifs.slice(0, 24) : motifs.filter(motif => motif === first);
+    const layout = createLayout(motifs, presets, randomFrom(seed + '|woodcut'));
+    return useProof ? layout.map(item => ({ ...item, angle: 0 })) : layout;
   }
 
   function chipEdges(context, id) {
@@ -56,6 +58,34 @@
     context.putImageData(image, 0, 0);
   }
 
+  function carveGouges(context, [centerX, centerY, degrees, length, count], id) {
+    const angle = degrees * Math.PI / 180;
+    const dx = Math.cos(angle);
+    const dy = Math.sin(angle);
+    const random = randomFrom(id + '|gouges');
+    for (let index = 0; index < count; index++) {
+      const offset = (index - (count - 1) / 2) * 5.2;
+      const strokeLength = length * (0.79 + random() * 0.35);
+      const halfWidth = 1.2 + random() * 0.6;
+      const x = centerX - dx * (strokeLength / 2 + offset * 0.36) - dy * offset;
+      const y = centerY - dy * (strokeLength / 2 + offset * 0.36) + dx * offset;
+      context.beginPath();
+      context.moveTo(x, y);
+      context.quadraticCurveTo(
+        x + dx * strokeLength * 0.33 - dy * halfWidth * 2.3,
+        y + dy * strokeLength * 0.33 + dx * halfWidth * 2.3,
+        x + dx * strokeLength,
+        y + dy * strokeLength,
+      );
+      context.quadraticCurveTo(
+        x + dx * strokeLength * 0.54 + dy * halfWidth * 0.8,
+        y + dy * strokeLength * 0.54 - dx * halfWidth * 0.8,
+        x, y,
+      );
+      context.fill();
+    }
+  }
+
   function blockSurface(motif) {
     let surface = blocks.get(motif);
     if (surface) return surface;
@@ -64,12 +94,11 @@
     const context = surface.getContext('2d', { willReadFrequently: true });
     context.setTransform(blockSize / 100, 0, 0, blockSize / 100, 0, 0);
     context.fillStyle = 'rgb(' + ink.join(', ') + ')';
-    for (const shape of motif.ink.split('|')) context.fill(new Path2D(shape));
-    if (motif.cut) {
-      context.globalCompositeOperation = 'destination-out';
-      context.fill(new Path2D(motif.cut), 'evenodd');
-    }
-    chipEdges(context, motif.id);
+    for (const shape of motif.ink.split('|')) context.fill(new Path2D(shape), 'evenodd');
+    context.globalCompositeOperation = 'destination-out';
+    if (motif.cut) context.fill(new Path2D(motif.cut), 'evenodd');
+    if (motif.gouge) carveGouges(context, motif.gouge, motif.id);
+    if (!motif.fromProof) chipEdges(context, motif.id);
     blocks.set(motif, surface);
     return surface;
   }

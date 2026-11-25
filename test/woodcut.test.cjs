@@ -21,6 +21,15 @@ test('all 50 woodcuts have distinct drawings and matching transparent PNGs', () 
   }
 });
 
+test('each proof contour retains its cuts and each new design has short gouges', () => {
+  const proof = motifs.slice(0, 24);
+  assert.ok(proof.every(motif => motif.fromProof && (motif.ink.match(/M/g) ?? []).length >= 4));
+  for (const motif of motifs.slice(24)) {
+    assert.ok(!motif.fromProof && motif.gouge.length === 5, motif.id);
+    assert.ok(motif.gouge.every(Number.isFinite) && motif.gouge[4] >= 2, motif.id);
+  }
+});
+
 test('woodcuts use the same staggered 6 × 4 layout limits as folk stamps', () => {
   // Each renderer uses a different random sequence, while both use the same cells.
   const cells = layout => layout.map(({ x, y }) => [Math.floor(x / 256), Math.floor(y / 256)]);
@@ -36,8 +45,10 @@ test('woodcuts use the same staggered 6 × 4 layout limits as folk stamps', () =
 });
 
 test('default, arbitrary and motif seeds are reproducible', () => {
-  assert.deepEqual(createWoodcutLayout(), createWoodcutLayout(' ' + defaults.seed + ' '));
-  assert.deepEqual(createWoodcutLayout().map(({ motif }) => motif.id), motifs.slice(0, 24).map(motif => motif.id));
+  const proof = createWoodcutLayout();
+  assert.deepEqual(proof, createWoodcutLayout(' ' + defaults.seed + ' '));
+  assert.deepEqual(proof.map(({ motif }) => motif.id), motifs.slice(0, 24).map(motif => motif.id));
+  assert.ok(proof.every(({ angle }) => angle === 0));
   assert.deepEqual(createWoodcutLayout('海岸'), createWoodcutLayout('海岸'));
   assert.notDeepEqual(createWoodcutLayout('海岸'), createWoodcutLayout('长风'));
   for (const motif of motifs) {

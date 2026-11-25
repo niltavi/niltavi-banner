@@ -6,7 +6,7 @@ Niltavi Banner is a seeded artwork generator for Niltavi projects. It runs offli
 
 Open [Geometric Screenprint](index.html) for a four-color poster of 24 geometric motifs. Open [Folk Rubber Stamps](stamps.html) for 24 dark-green impressions in six rows and four vertically staggered columns. The default stamp seed `林间` begins with a ginkgo leaf, a snail, a mushroom, and an acorn. Enter an ID from the [50-motif catalog](docs/stamp-motifs.md) to place that motif first.
 
-Open [Woodcut](woodcut.html) for black ink on ivory paper, with faceted silhouettes and broad gouged cuts. It uses the same grid as Folk Rubber Stamps. The [woodcut catalog](docs/woodcut-motifs.md) has 50 individual transparent PNGs and their seed IDs.
+Open [Woodcut](woodcut.html) for black ink on ivory paper, with broad cuts and small groups of tapered gouges. It uses the same grid as Folk Rubber Stamps. The [woodcut catalog](docs/woodcut-motifs.md) has 50 individual transparent PNGs and their seed IDs.
 
 <img src="docs/assets/generator-preview.png" width="240" alt="Four-color geometric screenprint arranged in six rows and four columns" />
 <img src="docs/assets/stamp-preview.webp" width="240" alt="Dark-green folk rubber stamps arranged in six rows and four staggered columns" />

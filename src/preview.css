@@ -1,0 +1,72 @@
+/* Static token subset from Niltavi UI's palette.css and niltava.css. */
+:root {
+  --color-paper: oklch(0.958 0.015 90.2);
+  --color-ink: oklch(0.343 0.030 175.6);
+  --color-throat-975: oklch(0.186 0.038 266.6);
+  --color-niltava-700: oklch(0.472 0.211 270.0);
+  --color-niltava-300: oklch(0.812 0.094 259.9);
+  --color-niltava-975: oklch(0.185 0.087 275.6);
+  --color-slate-300: oklch(0.811 0.036 254.9);
+  --color-slate-700: oklch(0.472 0.051 254.9);
+  --font-sans: "DM Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --background: light-dark(var(--color-paper), var(--color-throat-975));
+  --foreground: light-dark(var(--color-ink), var(--color-paper));
+  --accent: light-dark(var(--color-niltava-700), var(--color-niltava-300));
+  --accent-foreground: light-dark(var(--color-paper), var(--color-niltava-975));
+  --border: light-dark(var(--color-slate-700), var(--color-slate-300));
+  color-scheme: light dark;
+  background-color: var(--background);
+  color: var(--foreground);
+  font: 1rem/1.45 var(--font-sans);
+}
+
+body { margin: 0; }
+
+main {
+  box-sizing: border-box;
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 576px) { main { max-width: 540px; } }
+@media (min-width: 768px) { main { max-width: 720px; } }
+@media (min-width: 992px) { main { max-width: 960px; } }
+@media (min-width: 1200px) { main { max-width: 1140px; } }
+@media (min-width: 1400px) { main { max-width: 1320px; } }
+
+.print-actions, .print-adjustments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.form-label { display: grid; gap: 0.25rem; grid-template-columns: auto auto; }
+.form-label input { grid-column: 1 / -1; }
+.form-control { width: 7rem; }
+.form-range { width: 9rem; max-width: 100%; min-height: 1.5rem; margin: 0; accent-color: var(--accent); }
+output { font-variant-numeric: tabular-nums; }
+
+.button, .form-control {
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: inherit;
+  font: inherit;
+}
+
+.button--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+:where(button, input):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+canvas { display: block; justify-self: center; width: min(100%, 470px); height: auto; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }

@@ -11,20 +11,9 @@
 </head>
 <body>
 <main id="screenprint-patterns">
-  <div class="print-actions">
-    <label class="form-label">种子
-      <input class="form-control" data-seed type="text" value="2564" maxlength="48" size="12" spellcheck="false" aria-label="种子">
-    </label>
-    <button class="button button--primary" type="button" data-shuffle>随机一张</button>
-    <button class="button" type="button" data-export>下载 PNG</button>
-  </div>
-  <div class="print-adjustments">
-    <label class="form-label">线条起伏 <output data-value="wobble">48%</output>
-      <input class="form-range" data-setting="wobble" type="range" min="0" max="100" value="48" aria-label="线条起伏">
-    </label>
-    <label class="form-label">油墨颗粒 <output data-value="grain">56%</output>
-      <input class="form-range" data-setting="grain" type="range" min="0" max="100" value="56" aria-label="油墨颗粒">
-    </label>
+  <div class="seed-field">
+    <label for="poster-seed">种子</label>
+    <input id="poster-seed" type="text" maxlength="48" autocomplete="off" spellcheck="false">
   </div>
   <canvas data-poster width="1024" height="1536" role="img" aria-label="暖白底、四列六行的手绘几何图案海报"></canvas>
   <span class="sr-only" data-status aria-live="polite"></span>

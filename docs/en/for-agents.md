@@ -1,6 +1,6 @@
 # For Agents
 
-Open the repository's `index.html` directly in a modern browser. Change the seed to explore other compositions, then adjust stroke wobble and ink grain independently. The PNG export contains the artwork at 1024 × 1536.
+Open the repository's `index.html` directly in a modern browser and enter a seed. The 1024 × 1536 preview updates as you type.
 
 ## Render in another project
 
@@ -18,7 +18,7 @@ drawPoster(canvas.getContext('2d', { willReadFrequently: true }), {
 });
 ```
 
-`wobble` and `grain` accept numbers from 0 to 100. The renderer supports any positive canvas dimensions with a 2:3 aspect ratio. For predictable raster output, reuse the same renderer revision, browser and context settings. Antialiasing can vary across browsers.
+`wobble` and `grain` accept numbers from 0 to 100 and default to 48 and 56. The renderer supports any positive canvas dimensions with a 2:3 aspect ratio. Use `canvas.toBlob(callback, 'image/png')` to export the canvas. For predictable raster output, reuse the same renderer revision, browser and context settings. Antialiasing can vary across browsers.
 
 `createPosterLayout(seed)` returns the motif plan in row order without requiring a canvas. Node scripts can import the plan with `require('./src/screenprint.js')`.
 
@@ -30,4 +30,4 @@ Run the built-in Node tests from the repository root.
 node --test
 ```
 
-Open `index.html`, try both sliders and **随机一张**, then use **下载 PNG** and compare the result with the preview.
+Open `index.html`, type a different seed, and check that the poster changes. Enter the original seed again to check that it restores the original poster.

@@ -1,6 +1,6 @@
 # For Agents
 
-Open the repository's `index.html` directly in a modern browser and enter a seed. The 1024 × 1536 preview updates as you type.
+Open `index.html` for geometric screenprint or `stamps.html` for folk rubber stamps in a modern browser. The 1024 × 1536 preview updates as you type a seed.
 
 ## Render in another project
 
@@ -22,6 +22,12 @@ drawPoster(canvas.getContext('2d', { willReadFrequently: true }), {
 
 `createPosterLayout(seed)` returns the motif plan in row order without requiring a canvas. Node scripts can import the plan with `require('./src/screenprint.js')`.
 
+### Folk rubber stamps
+
+Load [`src/stamp-motifs.js`](../../src/stamp-motifs.js) followed by [`src/stamp.js`](../../src/stamp.js) as classic browser scripts. Call `NiltaviStamp.drawPoster(context, { seed })` with a positive 2:3 canvas. Use `canvas.toBlob(callback, 'image/png')` for PNG export. The renderer uses `OffscreenCanvas` to build the paper and cut the ink mask.
+
+`NiltaviStamp.motifs` is the catalog, and `NiltaviStamp.createStampLayout(seed)` returns a sheet with four motifs in stamp order. Node can use both via `require('./src/stamp.js')`. Seed `林间` is the default. A [catalog ID](../stamp-motifs.md) pins the matching motif in the first position, and a free-form seed varies the whole sheet.
+
 ## Verify
 
 Run the built-in Node tests from the repository root.
@@ -30,4 +36,4 @@ Run the built-in Node tests from the repository root.
 node --test
 ```
 
-Open `index.html`, type a different seed, and check that the poster changes. Enter the original seed again to check that it restores the original poster.
+Open each preview, type a different seed, and check that the artwork changes. Enter the original seed again to check that it restores the original artwork. On the stamp page, use `fern` to check that the first stamp is a fern.

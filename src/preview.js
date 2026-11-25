@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const root = document.getElementById('screenprint-patterns');
+  const root = document.querySelector('[data-generator]');
   const canvas = root.querySelector('[data-poster]');
   const preview = canvas.getContext('2d');
   const raster = document.createElement('canvas');
@@ -10,7 +10,8 @@
   const context = raster.getContext('2d', { willReadFrequently: true });
   const seedField = root.querySelector('#poster-seed');
   const status = root.querySelector('[data-status]');
-  const { defaults, drawPoster } = globalThis.NiltaviBanner;
+  const renderer = root.dataset.generator === 'stamp' ? globalThis.NiltaviStamp : globalThis.NiltaviBanner;
+  const { defaults, drawPoster } = renderer;
 
   let redraw;
   function update(event) {

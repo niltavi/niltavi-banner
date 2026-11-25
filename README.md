@@ -6,6 +6,8 @@ Niltavi Banner generates screen-print-style geometric artwork for Niltavi projec
 
 Open [index.html](index.html) from a local checkout to try the generator and export a 1024 × 1536 PNG. The preview runs offline in a modern browser. See the [integration guide](docs/en/for-agents.md) to render posters in another project or run the checks.
 
+<img src="docs/assets/generator-preview.png" width="530" alt="Niltavi Banner preview with seed and texture controls above a four-column, six-row geometric poster" />
+
 Licensed under [AGPL-3.0](LICENSE).
 
 <div>

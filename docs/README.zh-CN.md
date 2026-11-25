@@ -6,6 +6,8 @@ Niltavi Banner 为 Niltavi 项目生成带丝网印刷肌理的几何图案。�
 
 在本地仓库打开 [index.html](../index.html)，即可离线预览并导出 1024 × 1536 PNG。要在其他项目中生成海报或运行测试，可查阅[集成指南](en/for-agents.md)。
 
+<img src="assets/generator-preview.png" width="530" alt="Niltavi Banner 预览，上方是种子和纹理控件，下方是四列六行的几何图案海报" />
+
 项目采用 [AGPL-3.0](../LICENSE) 许可。
 
 <div>

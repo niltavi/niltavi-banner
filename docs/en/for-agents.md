@@ -1,6 +1,6 @@
 # For Agents
 
-Open `index.html` for geometric screenprint or `stamps.html` for folk rubber stamps in a modern browser. The 1024 × 1536 preview updates as you type a seed.
+Open `index.html` for geometric screenprint, `stamps.html` for folk rubber stamps, or `woodcut.html` for woodcut in a modern browser. The 1024 × 1536 preview updates as you type a seed.
 
 ## Render in another project
 
@@ -28,6 +28,12 @@ Load [`src/stamp-motifs.js`](../../src/stamp-motifs.js) followed by [`src/stamp.
 
 `NiltaviStamp.motifs` is the catalog, and `NiltaviStamp.createStampLayout(seed)` returns 24 motifs in row order across six rows and four vertically staggered columns. Node can use both via `require('./src/stamp.js')`. Seed `林间` is the default. A [catalog ID](../stamp-motifs.md) pins the matching motif in the first position, and a free-form seed varies the whole sheet.
 
+### Woodcut
+
+Load the two stamp scripts above for the shared layout, then [`src/woodcut-motifs.js`](../../src/woodcut-motifs.js) and [`src/woodcut.js`](../../src/woodcut.js). Call `NiltaviWoodcut.drawPoster(context, { seed })` with a positive 2:3 canvas. The default seed `黑木` shows the first 24 designs. A [catalog ID](../woodcut-motifs.md) places that design first. `createWoodcutLayout(seed)` returns the layout in row order and also works in Node.
+
+Use `drawMotif(context, id)` to reproduce any standalone PNG in [`assets/woodcut`](../../assets/woodcut). The shipped assets use a square 384 × 384 canvas, exposed as `NiltaviWoodcut.blockSize`, and a transparent background. The renderer uses `OffscreenCanvas` for each carved block and the paper.
+
 ## Verify
 
 Run the built-in Node tests from the repository root.
@@ -36,4 +42,4 @@ Run the built-in Node tests from the repository root.
 node --test
 ```
 
-Open each preview, type a different seed, and check that the artwork changes. Enter the original seed again to check that it restores the original artwork. On the stamp page, use `fern` to check that the first stamp is a fern.
+Open each preview, type a different seed, and check that the artwork changes. Enter the original seed again to check that it restores the original artwork. Use `fern` on the stamp page and `crane` on the woodcut page to check that the selected motif moves to the first cell.

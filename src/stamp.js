@@ -8,11 +8,12 @@
   const defaults = Object.freeze({ seed: '林间' });
   const paperColor = [246, 231, 203];
   const inkColor = [24, 61, 35];
+  const surfaceCache = new WeakMap();
+  const pathCache = new WeakMap();
+
   const rows = 6;
   const columnOffsets = [-18, 20, -14, 17];
   const columns = columnOffsets.length;
-  const surfaceCache = new WeakMap();
-  const pathCache = new WeakMap();
 
   function randomFrom(seed) {
     let value = 2166136261;
@@ -28,15 +29,8 @@
     };
   }
 
-  function normalizeSeed(seed) {
-    return String(seed ?? '').trim() || defaults.seed;
-  }
-
-  function createStampLayout(seed) {
-    seed = normalizeSeed(seed);
-    const random = randomFrom(seed + '|layout');
-    // A motif ID pins the first stamp so every design can be found directly.
-    const chosen = seed === defaults.seed ? motifs.slice(0, 4) : motifs.filter(motif => motif.id === seed);
+  function createLayout(motifs, firstMotifs, random) {
+    const chosen = [...firstMotifs];
     const pool = motifs.filter(motif => !chosen.includes(motif));
     while (chosen.length < rows * columns) {
       chosen.push(pool.splice(Math.floor(random() * pool.length), 1)[0]);
@@ -52,6 +46,18 @@
         angle: (random() - 0.5) * 0.32,
       };
     });
+  }
+
+  function normalizeSeed(seed) {
+    return String(seed ?? '').trim() || defaults.seed;
+  }
+
+  function createStampLayout(seed) {
+    seed = normalizeSeed(seed);
+    const random = randomFrom(seed + '|layout');
+    // A motif ID pins the first stamp so every design can be found directly.
+    const chosen = seed === defaults.seed ? motifs.slice(0, 4) : motifs.filter(motif => motif.id === seed);
+    return createLayout(motifs, chosen, random);
   }
 
   function noiseField(random, columns, rows) {
@@ -223,7 +229,8 @@
     context.putImageData(surfaces.output, 0, 0);
   }
 
-  const api = Object.freeze({ width, height, defaults, motifs, createStampLayout, drawPoster });
+  const printLayout = Object.freeze({ randomFrom, createLayout });
+  const api = Object.freeze({ width, height, defaults, motifs, createStampLayout, drawPoster, printLayout });
   if (inNode) module.exports = api;
   else globalThis.NiltaviStamp = api;
 })();

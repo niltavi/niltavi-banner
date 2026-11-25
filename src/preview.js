@@ -10,7 +10,12 @@
   const context = raster.getContext('2d', { willReadFrequently: true });
   const seedField = root.querySelector('#poster-seed');
   const status = root.querySelector('[data-status]');
-  const renderer = root.dataset.generator === 'stamp' ? globalThis.NiltaviStamp : globalThis.NiltaviBanner;
+  const renderers = {
+    screenprint: globalThis.NiltaviBanner,
+    stamp: globalThis.NiltaviStamp,
+    woodcut: globalThis.NiltaviWoodcut,
+  };
+  const renderer = renderers[root.dataset.generator];
   const { defaults, drawPoster } = renderer;
 
   let redraw;

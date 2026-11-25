@@ -3,8 +3,10 @@
 
   const inNode = typeof module === 'object' && module.exports;
   const motifs = inNode ? require('./stamp-motifs.js') : globalThis.NiltaviStampMotifs;
+  const series2Motifs = inNode ? require('./stamp-series-2.js') : (globalThis.NiltaviStampSeries2 ?? []);
   const width = 1024;
   const height = 1536;
+  const blockSize = 384;
   const defaults = Object.freeze({ seed: '林间' });
   const paperColor = [246, 231, 203];
   const inkColor = [24, 61, 35];
@@ -30,6 +32,7 @@
   }
 
   function createLayout(motifs, firstMotifs, random) {
+    if (motifs.length < rows * columns) throw new RangeError('Load a catalog with at least 24 motifs first.');
     const chosen = [...firstMotifs];
     const pool = motifs.filter(motif => !chosen.includes(motif));
     while (chosen.length < rows * columns) {
@@ -52,8 +55,11 @@
     return String(seed ?? '').trim() || defaults.seed;
   }
 
-  function createStampLayout(seed) {
+  function createStampLayout(seed, series = 1) {
     seed = normalizeSeed(seed);
+    if (series === 2) {
+      return createLayout(series2Motifs, series2Motifs.filter(motif => motif.id === seed), randomFrom(seed + '|layout|2'));
+    }
     const random = randomFrom(seed + '|layout');
     // A motif ID pins the first stamp so every design can be found directly.
     const chosen = seed === defaults.seed ? motifs.slice(0, 4) : motifs.filter(motif => motif.id === seed);
@@ -146,39 +152,50 @@
     return paths;
   }
 
+  function paintStamp(context, motif) {
+    const paths = pathsFor(motif);
+    context.save();
+    for (const path of paths.ink) context.fill(path);
+    context.globalCompositeOperation = 'destination-out';
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.lineWidth = motif.weight;
+    context.stroke(paths.cuts);
+    context.fill(paths.holes);
+    context.restore();
+  }
+
+  function wearStamp(context, random, areaWidth, areaHeight, count, radiusScale = 1) {
+    context.save();
+    context.globalCompositeOperation = 'destination-out';
+    for (let index = 0; index < count; index++) {
+      const x = random() * areaWidth;
+      const y = random() * areaHeight;
+      const radius = (0.25 + random() ** 4 * 2.35) * radiusScale;
+      const angle = random() * Math.PI;
+      context.globalAlpha = 0.22 + random() * 0.77;
+      context.beginPath();
+      context.ellipse(x, y, radius * 1.15, radius * 0.63, angle, 0, Math.PI * 2);
+      context.fill();
+    }
+    context.restore();
+  }
+
   function stampMask(surfaces, layout, random) {
     const { stencil, width: canvasWidth, height: canvasHeight } = surfaces;
     stencil.clearRect(0, 0, canvasWidth, canvasHeight);
     stencil.save();
     stencil.scale(canvasWidth / width, canvasHeight / height);
     for (const { motif, x, y, size, angle } of layout) {
-      const paths = pathsFor(motif);
       stencil.save();
       stencil.translate(x, y);
       stencil.rotate(angle);
       stencil.scale(size / 100, size / 100);
       stencil.translate(-50, -50);
-      for (const path of paths.ink) stencil.fill(path);
-      stencil.globalCompositeOperation = 'destination-out';
-      stencil.lineCap = 'round';
-      stencil.lineJoin = 'round';
-      stencil.lineWidth = motif.weight;
-      stencil.stroke(paths.cuts);
-      stencil.fill(paths.holes);
+      paintStamp(stencil, motif);
       stencil.restore();
     }
-
-    stencil.globalCompositeOperation = 'destination-out';
-    for (let index = 0; index < 7400; index++) {
-      const x = random() * width;
-      const y = random() * height;
-      const radius = 0.25 + random() ** 4 * 2.35;
-      const angle = random() * Math.PI;
-      stencil.globalAlpha = 0.22 + random() * 0.77;
-      stencil.beginPath();
-      stencil.ellipse(x, y, radius * 1.15, radius * 0.63, angle, 0, Math.PI * 2);
-      stencil.fill();
-    }
+    wearStamp(stencil, random, width, height, 7400);
     stencil.restore();
     return stencil.getImageData(0, 0, canvasWidth, canvasHeight).data;
   }
@@ -186,7 +203,7 @@
   function printInk(surfaces, mask, seed) {
     const { output, paper, width: canvasWidth, height: canvasHeight } = surfaces;
     const pixels = output.data;
-    pixels.set(paper);
+    if (paper) pixels.set(paper);
     const random = randomFrom(seed + '|impression');
     const scale = canvasWidth / width;
     const spacing = Math.max(1, 7 * scale);
@@ -211,10 +228,30 @@
         const press = pressure(x / canvasWidth * 14, y / canvasHeight * 20);
         const coverage = alpha * (0.939 + 0.026 * press + random() * 0.034);
         for (let channel = 0; channel < 3; channel++) {
-          pixels[index + channel] = paper[index + channel] * (1 - coverage) + inkColor[channel] * coverage;
+          pixels[index + channel] = paper
+            ? paper[index + channel] * (1 - coverage) + inkColor[channel] * coverage
+            : inkColor[channel];
         }
+        if (!paper) pixels[index + 3] = coverage * 255;
       }
     }
+  }
+
+  function drawMotif(context, id) {
+    const motif = series2Motifs.find(mark => mark.id === id) ?? motifs.find(mark => mark.id === id);
+    if (!motif) throw new RangeError('Unknown stamp motif: ' + id);
+    const { width: canvasWidth, height: canvasHeight } = context.canvas;
+    const side = Math.min(canvasWidth, canvasHeight);
+    const stencil = new OffscreenCanvas(canvasWidth, canvasHeight).getContext('2d', { willReadFrequently: true });
+    stencil.translate((canvasWidth - side) / 2, (canvasHeight - side) / 2);
+    stencil.scale(side / 112, side / 112);
+    stencil.translate(6, 6);
+    paintStamp(stencil, motif);
+    wearStamp(stencil, randomFrom(id + '|wear'), 100, 100, 560, 0.33);
+    const mask = stencil.getImageData(0, 0, canvasWidth, canvasHeight).data;
+    const output = context.createImageData(canvasWidth, canvasHeight);
+    printInk({ output, width: canvasWidth, height: canvasHeight }, mask, id);
+    context.putImageData(output, 0, 0);
   }
 
   function drawPoster(context, settings = {}) {
@@ -224,13 +261,13 @@
     }
     const seed = normalizeSeed(settings.seed);
     const surfaces = getSurfaces(context);
-    const mask = stampMask(surfaces, createStampLayout(seed), randomFrom(seed + '|wear'));
+    const mask = stampMask(surfaces, createStampLayout(seed, settings.series), randomFrom(seed + '|wear'));
     printInk(surfaces, mask, seed);
     context.putImageData(surfaces.output, 0, 0);
   }
 
   const printLayout = Object.freeze({ randomFrom, createLayout });
-  const api = Object.freeze({ width, height, defaults, motifs, createStampLayout, drawPoster, printLayout });
+  const api = Object.freeze({ width, height, blockSize, defaults, motifs, series2Motifs, createStampLayout, drawMotif, drawPoster, printLayout });
   if (inNode) module.exports = api;
   else globalThis.NiltaviStamp = api;
 })();

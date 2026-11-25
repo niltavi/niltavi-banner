@@ -3,6 +3,9 @@
 
   const width = 1024;
   const height = 1536;
+  const blockSize = 384;
+  const series2Motifs = typeof module === 'object' && module.exports
+    ? require('./screenprint-series-2.js') : (globalThis.NiltaviScreenprintSeries2 ?? []);
   const defaults = Object.freeze({ seed: '2564', wobble: 48, grain: 56, paper: '#faf3e3' });
   const inks = ['#2e8246', '#a0c84c', '#0498b8', '#f6ca35'];
   const contrastingInk = [[1, 3], [0, 2], [1, 3], [0, 2]];
@@ -43,7 +46,19 @@
     return result;
   }
 
-  function createPosterLayout(seed = defaults.seed) {
+  function createSeries2Layout(seed) {
+    if (!series2Motifs.length) throw new RangeError('Load the screenprint series 2 catalog first.');
+    const random = randomFrom(seed + '|layout|2');
+    const first = series2Motifs.find(motif => motif.id === seed);
+    const pool = shuffle(series2Motifs.filter(motif => motif !== first), random);
+    return shapeGrid.flat().map((shape, index) => {
+      const motif = index === 0 && first ? first : pool.splice(pool.findIndex(mark => mark.shape === shape), 1)[0];
+      return { ...motif, x: 194 + 212 * (index % 4), y: 238 + 212 * Math.floor(index / 4) };
+    });
+  }
+
+  function createPosterLayout(seed = defaults.seed, series = 1) {
+    if (series === 2) return createSeries2Layout(normalizeSeed(seed));
     const random = randomFrom(normalizeSeed(seed) + '|layout');
     const rows = random() < 0.5 ? [...shapeGrid].reverse() : shapeGrid;
     const reverseColumns = random() < 0.5;
@@ -255,7 +270,8 @@
     if (amount === 0) return;
     context.save();
     context.clip(path);
-    context.fillStyle = paper;
+    if (paper === null) context.globalCompositeOperation = 'destination-out';
+    context.fillStyle = paper ?? '#000';
     for (let index = 0; index < 780; index++) {
       const x = between(random, -91, 91);
       const y = between(random, -91, 91);
@@ -278,12 +294,12 @@
     context.restore();
   }
 
-  function drawMotif(context, motif, seed, wobble, grain, paper) {
+  function paintMotif(context, motif, seed, wobble, grain, paper) {
     const random = randomFrom(seed + '|motif');
     const points = outline(motif.shape, randomFrom(seed + '|edge'), wobble);
     const path = trace(points, true);
     const firstInk = inks[motif.ink];
-    const secondInk = inks[pick(random, contrastingInk[motif.ink])];
+    const secondInk = inks[motif.secondInk ?? pick(random, contrastingInk[motif.ink])];
     const patternInk = motif.open ? firstInk : motif.overhang || motif.overprint ? secondInk : paper;
     const scale = between(random, 0.94, 1.045);
     context.save();
@@ -299,20 +315,22 @@
 
     context.save();
     context.clip(path);
-    context.fillStyle = patternInk;
-    context.strokeStyle = patternInk;
+    if (patternInk === null) context.globalCompositeOperation = 'destination-out';
+    context.fillStyle = patternInk ?? '#000';
+    context.strokeStyle = patternInk ?? '#000';
     let rows;
     if (motif.pattern === 'contour') drawContours(context, random, wobble);
     else if (['dot', 'dash'].includes(motif.pattern)) drawMarks(context, motif.pattern, random, wobble);
     else rows = drawLines(context, motif.pattern, random, wobble);
     if (motif.sprig) {
       context.save();
+      if (paper === null) context.globalCompositeOperation = 'source-over';
       context.fillStyle = firstInk;
       context.beginPath();
       context.ellipse(22, 22, 23, 35, 0.32, 0, tau);
       context.fill();
       context.restore();
-      drawSprig(context, random, paper);
+      drawSprig(context, random, paper ?? '#000');
     }
     context.restore();
     if (motif.overhang && rows) {
@@ -320,6 +338,19 @@
       drawOverhangs(context, points, rows, randomFrom(seed + '|overhang'));
     }
     drawGrain(context, path, points, randomFrom(seed + '|grain'), grain, paper);
+    context.restore();
+  }
+
+  function drawMotif(context, id) {
+    const motif = series2Motifs.find(mark => mark.id === id);
+    if (!motif) throw new RangeError('Unknown screenprint motif: ' + id);
+    const { width: canvasWidth, height: canvasHeight } = context.canvas;
+    const scale = Math.min(canvasWidth, canvasHeight) / 220;
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    context.save();
+    context.translate(canvasWidth / 2, canvasHeight / 2);
+    context.scale(scale, scale);
+    paintMotif(context, { ...motif, x: 0, y: 0 }, id, defaults.wobble / 100, defaults.grain / 100, null);
     context.restore();
   }
 
@@ -340,8 +371,8 @@
     try {
       context.fillStyle = paper;
       context.fillRect(0, 0, width, height);
-      createPosterLayout(seed).forEach((motif, index) => {
-        drawMotif(context, motif, seed + '|' + index, wobble, grain, paper);
+      createPosterLayout(seed, settings.series).forEach((motif, index) => {
+        paintMotif(context, motif, motif.id ?? seed + '|' + index, wobble, grain, paper);
       });
     } finally {
       if (scale !== 1) context.restore();
@@ -352,7 +383,7 @@
     return (Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : fallback) / 100;
   }
 
-  const api = Object.freeze({ width, height, defaults, createPosterLayout, drawPoster });
+  const api = Object.freeze({ width, height, blockSize, defaults, series2Motifs, createPosterLayout, drawMotif, drawPoster });
   if (typeof module === 'object' && module.exports) module.exports = api;
   else globalThis.NiltaviBanner = api;
 })();

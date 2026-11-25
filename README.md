@@ -8,6 +8,8 @@ Open [Geometric Screenprint](index.html) for a four-color poster of 24 geometric
 
 Open [Woodcut](woodcut.html) for black ink on ivory paper, with broad cuts and small groups of tapered gouges. It uses the same grid as Folk Rubber Stamps. The [woodcut catalog](docs/woodcut-motifs.md) has 50 individual transparent PNGs and their seed IDs.
 
+The [second series](docs/series-2.md) adds 50 standalone PNGs per style. Open a preview with `?series=2` to use its new catalog with the same spacing.
+
 <img src="docs/assets/generator-preview.png" width="240" alt="Four-color geometric screenprint arranged in six rows and four columns" />
 <img src="docs/assets/stamp-preview.webp" width="240" alt="Dark-green folk rubber stamps arranged in six rows and four staggered columns" />
 <img src="docs/assets/woodcut-preview.webp" width="240" alt="Black woodcut symbols on ivory paper in six rows and four staggered columns" />

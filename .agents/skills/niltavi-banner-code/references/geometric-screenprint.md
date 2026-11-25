@@ -15,4 +15,4 @@ Evaluate `outline` and `drawMotif` first. Use `drawLines`, `drawMarks`, or `draw
 
 The default shape sequence and six-pattern shuffles are part of the seeded output. Inserting a pattern into the shuffled list can change the pattern order and later random draws throughout the sheet. Give a new pattern or silhouette an intentional selection route and compare the old seed `2564` before updating the established pool.
 
-The current API renders a sheet and exposes its plan. If the task calls for an individual asset, reuse the motif drawing path and document the selection entry point. Keep the default sheet layout and its callers intact.
+The [second-series catalog](../../../../src/screenprint-series-2.js) has named recipes and a transparent `drawMotif(context, id)` path. Use it as the model when the task calls for individual assets. The default sheet layout and its callers keep their original selection.

@@ -17,6 +17,15 @@
   };
   const renderer = renderers[root.dataset.generator];
   const { defaults, drawPoster } = renderer;
+  const query = new URLSearchParams(window.location.search);
+  const series = query.get('series') === '2' ? 2 : 1;
+  if (series === 2) {
+    root.querySelectorAll('.generator-nav a').forEach(link => {
+      const url = new URL(link.href);
+      url.searchParams.set('series', '2');
+      link.href = url.href;
+    });
+  }
 
   let redraw;
   function update(event) {
@@ -24,7 +33,7 @@
     const seed = seedField.value.trim() || defaults.seed;
     cancelAnimationFrame(redraw);
     redraw = requestAnimationFrame(() => {
-      drawPoster(context, { seed });
+      drawPoster(context, { seed, series });
       preview.drawImage(raster, 0, 0);
     });
   }
@@ -35,6 +44,6 @@
     seedField.value = seedField.value.trim() || defaults.seed;
     status.textContent = '图案已更新，种子 ' + seedField.value;
   });
-  seedField.value = defaults.seed;
+  seedField.value = (series === 2 ? query.get('seed')?.trim().slice(0, seedField.maxLength) : '') || defaults.seed;
   update();
 })();

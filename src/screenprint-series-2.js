@@ -1,0 +1,65 @@
+(() => {
+  'use strict';
+
+  const ink = { grass: 0, lime: 1, cyan: 2, yellow: 3 };
+  const mark = (id, name, shape, pattern, color, mode = 'knockout', secondColor) => Object.freeze({
+    id, name, shape, pattern, ink: ink[color], secondInk: ink[secondColor],
+    open: mode === 'open', overprint: mode === 'overprint',
+    overhang: mode === 'overhang', sprig: mode === 'sprig',
+  });
+  const motifs = Object.freeze([
+    mark('pond-ripple', '池纹', 'circle', 'contour', 'cyan', 'overprint', 'lime'),
+    mark('sun-grain', '日斑', 'circle', 'dot', 'yellow'),
+    mark('grass-current', '草流', 'circle', 'wave', 'grass', 'overhang', 'yellow'),
+    mark('chalk-disc', '短划圆', 'circle', 'dash', 'lime', 'open'),
+    mark('folded-sun', '折日', 'circle', 'zigzag', 'yellow', 'overprint', 'grass'),
+    mark('blue-lattice', '蓝线圆', 'circle', 'stripe', 'cyan'),
+    mark('seed-disc', '种盘', 'circle', 'dot', 'grass', 'sprig'),
+    mark('lemon-isobar', '柠檬等高线', 'circle', 'contour', 'yellow'),
+    mark('tidal-disc', '潮线圆', 'circle', 'wave', 'lime'),
+    mark('blue-chalk', '青蓝短划圆', 'circle', 'dash', 'cyan', 'overprint', 'yellow'),
+    mark('switchback', '折返峰', 'triangle', 'zigzag', 'cyan', 'overhang', 'yellow'),
+    mark('yellow-wave-peak', '黄浪峰', 'triangle', 'wave', 'yellow', 'overprint', 'cyan'),
+    mark('grass-pinpoint', '草绿点峰', 'triangle', 'dot', 'grass', 'open'),
+    mark('contour-peak', '等高峰', 'triangle', 'contour', 'lime'),
+    mark('needle-peak', '针线峰', 'triangle', 'dash', 'cyan'),
+    mark('crosswind-peak', '斜风峰', 'triangle', 'stripe', 'grass', 'overhang', 'lime'),
+    mark('citron-stripes', '柠檬条峰', 'triangle', 'stripe', 'yellow', 'open'),
+    mark('ripple-peak', '水纹峰', 'triangle', 'wave', 'cyan'),
+    mark('quiet-peak', '静峰', 'triangle', 'contour', 'grass', 'overprint', 'lime'),
+    mark('yellow-pinpoint', '黄点峰', 'triangle', 'dot', 'yellow', 'overprint', 'grass'),
+    mark('window-ripple', '窗纹', 'square', 'wave', 'cyan', 'overhang', 'lime'),
+    mark('grass-weave', '草编方', 'square', 'stripe', 'grass'),
+    mark('lemon-check', '柠檬点方', 'square', 'dot', 'yellow', 'open'),
+    mark('garden-square', '方园', 'square', 'dash', 'grass', 'sprig'),
+    mark('lime-topography', '浅绿地形', 'square', 'contour', 'lime', 'overprint', 'cyan'),
+    mark('yellow-switch', '黄折方', 'square', 'zigzag', 'yellow'),
+    mark('blue-dashes', '青蓝短划方', 'square', 'dash', 'cyan', 'open'),
+    mark('water-square', '水方', 'square', 'contour', 'cyan'),
+    mark('grass-wave-tile', '草浪砖', 'square', 'wave', 'grass', 'overprint', 'yellow'),
+    mark('striped-pane', '条纹窗', 'square', 'stripe', 'lime', 'overprint', 'grass'),
+    mark('lake-cell', '湖格', 'hexagon', 'contour', 'cyan'),
+    mark('citron-cell', '柠檬六角', 'hexagon', 'dash', 'yellow', 'overprint', 'cyan'),
+    mark('honey-dots', '蜜点', 'hexagon', 'dot', 'yellow'),
+    mark('staggered-cell', '六角折线', 'hexagon', 'zigzag', 'lime', 'overhang', 'cyan'),
+    mark('grass-honeycomb', '草绿蜂格', 'hexagon', 'stripe', 'grass', 'open'),
+    mark('brim-wave', '六角波沿', 'hexagon', 'wave', 'lime', 'sprig'),
+    mark('prism-dashes', '棱格短线', 'hexagon', 'dash', 'grass'),
+    mark('blue-ribs', '青蓝线肋', 'hexagon', 'stripe', 'cyan', 'overprint', 'yellow'),
+    mark('hollow-cell', '镂空点格', 'hexagon', 'dot', 'cyan', 'open'),
+    mark('sun-cell', '日光六角', 'hexagon', 'wave', 'yellow'),
+    mark('lime-islet', '浅绿小岛', 'cutout', 'contour', 'lime'),
+    mark('foam-pocket', '泡沫洼', 'cutout', 'dot', 'cyan', 'overprint', 'yellow'),
+    mark('sprig-islet', '枝叶岛', 'cutout', 'wave', 'grass', 'sprig'),
+    mark('open-islet', '晴岛', 'cutout', 'dash', 'yellow', 'open'),
+    mark('folded-puddle', '折线水洼', 'cutout', 'zigzag', 'cyan'),
+    mark('lime-bank', '浅绿曲岸', 'cutout', 'wave', 'lime', 'overhang', 'grass'),
+    mark('garden-dots', '花圃点纹', 'cutout', 'dot', 'grass', 'sprig'),
+    mark('yellow-layers', '黄沙等高线', 'cutout', 'contour', 'yellow', 'overprint', 'grass'),
+    mark('blue-strand', '蓝岸条纹', 'cutout', 'stripe', 'cyan', 'overprint', 'lime'),
+    mark('grass-fold', '草地折线', 'cutout', 'zigzag', 'grass'),
+  ]);
+
+  if (typeof module === 'object' && module.exports) module.exports = motifs;
+  else globalThis.NiltaviScreenprintSeries2 = motifs;
+})();

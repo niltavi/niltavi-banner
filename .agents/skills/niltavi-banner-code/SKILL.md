@@ -21,6 +21,8 @@ Keep the 1024 × 1536 default proof at four columns and six rows. Use the render
 
 Use the renderer's seeded random streams and compare existing seeds before and after the change. Appending a stamp or woodcut changes the sampling pool length. This can change the selection for older free-form seeds and the companion motifs for ID-pinned seeds. If existing output is required, preserve the old selection cohort or use an explicitly selected catalog revision. Make the new IDs reachable through the supported selection flow. The default proof's order, orientation, and pixels are useful regression fixtures. Check a representative free-form seed and at least one existing motif-ID seed too.
 
+The repository's [second series](../../../docs/series-2.md) is one example of explicit revision selection. A URL option chooses its catalog separately from the seed string. The original seed field still accepts arbitrary text with the original meaning.
+
 Update the affected catalog index and tests with the new entries. Regenerate committed individual assets where the style already ships them or where the task calls for them. When updating a README image, export the artwork canvas and preserve the surrounding README text.
 
 ## Verify

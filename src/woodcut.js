@@ -3,6 +3,7 @@
 
   const inNode = typeof module === 'object' && module.exports;
   const motifs = inNode ? require('./woodcut-motifs.js') : globalThis.NiltaviWoodcutMotifs;
+  const series2Motifs = inNode ? require('./woodcut-series-2.js') : (globalThis.NiltaviWoodcutSeries2 ?? []);
   const { printLayout } = inNode ? require('./stamp.js') : globalThis.NiltaviStamp;
   const { randomFrom, createLayout } = printLayout;
   const width = 1024;
@@ -11,13 +12,16 @@
   const defaults = Object.freeze({ seed: '黑木' });
   const ink = [24, 22, 17];
   const paperColor = '#f8ecd7';
-  const byId = new Map(motifs.map(motif => [motif.id, motif]));
+  const byId = new Map([...motifs, ...series2Motifs].map(motif => [motif.id, motif]));
   const blocks = new WeakMap();
   const papers = new WeakMap();
 
-  function createWoodcutLayout(seed) {
+  function createWoodcutLayout(seed, series = 1) {
     seed = String(seed ?? '').trim() || defaults.seed;
     const first = byId.get(seed);
+    if (series === 2) {
+      return createLayout(series2Motifs, series2Motifs.filter(motif => motif === first), randomFrom(seed + '|woodcut|2'));
+    }
     const useProof = seed === defaults.seed;
     const presets = useProof ? motifs.slice(0, 24) : motifs.filter(motif => motif === first);
     const layout = createLayout(motifs, presets, randomFrom(seed + '|woodcut'));
@@ -153,7 +157,7 @@
     context.drawImage(paperSurface(context), 0, 0);
     const scale = canvasWidth / width;
     context.scale(scale, scale);
-    for (const { motif, x, y, size, angle } of createWoodcutLayout(settings.seed)) {
+    for (const { motif, x, y, size, angle } of createWoodcutLayout(settings.seed, settings.series)) {
       context.save();
       context.translate(x, y);
       context.rotate(angle);
@@ -163,7 +167,7 @@
     context.restore();
   }
 
-  const api = Object.freeze({ width, height, blockSize, defaults, motifs, createWoodcutLayout, drawMotif, drawPoster });
+  const api = Object.freeze({ width, height, blockSize, defaults, motifs, series2Motifs, createWoodcutLayout, drawMotif, drawPoster });
   if (inNode) module.exports = api;
   else globalThis.NiltaviWoodcut = api;
 })();

@@ -2,6 +2,12 @@
 
 Open `index.html` for geometric screenprint, `stamps.html` for folk rubber stamps, or `woodcut.html` for woodcut in a modern browser. The 1024 × 1536 preview updates as you type a seed.
 
+### Second series
+
+Use `?series=2` on any preview page to open its new 50-motif catalog. Add `&seed=<id>` when linking directly to a motif. In code, load the style's `src/*-series-2.js` file before its renderer, then set `series: 2` alongside `seed` in `drawPoster`. Layout functions accept `2` as their second argument. The original preview URL and renderer defaults keep the original catalog and seed meanings.
+
+Each renderer exposes `series2Motifs`, `blockSize`, and `drawMotif(context, id)` for building individual transparent PNGs. See the [second-series index](../series-2.md) for the assets. To rebuild all 150 PNGs and the three proof images from the repository root, run `node scripts/export-series-2.mjs` with Node 22 or newer and Chrome or Chromium installed. Pass a browser executable path as the first argument when needed.
+
 ## Render in another project
 
 Load [`src/screenprint.js`](../../src/screenprint.js) as a classic browser script. It provides `globalThis.NiltaviBanner`. Give `drawPoster` a fresh 2D canvas context and pass the same seed and settings to reproduce a composition.

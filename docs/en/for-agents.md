@@ -26,7 +26,7 @@ drawPoster(canvas.getContext('2d', { willReadFrequently: true }), {
 
 Load [`src/stamp-motifs.js`](../../src/stamp-motifs.js) followed by [`src/stamp.js`](../../src/stamp.js) as classic browser scripts. Call `NiltaviStamp.drawPoster(context, { seed })` with a positive 2:3 canvas. Use `canvas.toBlob(callback, 'image/png')` for PNG export. The renderer uses `OffscreenCanvas` to build the paper and cut the ink mask.
 
-`NiltaviStamp.motifs` is the catalog, and `NiltaviStamp.createStampLayout(seed)` returns a sheet with four motifs in stamp order. Node can use both via `require('./src/stamp.js')`. Seed `林间` is the default. A [catalog ID](../stamp-motifs.md) pins the matching motif in the first position, and a free-form seed varies the whole sheet.
+`NiltaviStamp.motifs` is the catalog, and `NiltaviStamp.createStampLayout(seed)` returns 24 motifs in row order across six rows and four vertically staggered columns. Node can use both via `require('./src/stamp.js')`. Seed `林间` is the default. A [catalog ID](../stamp-motifs.md) pins the matching motif in the first position, and a free-form seed varies the whole sheet.
 
 ## Verify
 

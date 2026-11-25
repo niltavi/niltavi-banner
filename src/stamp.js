@@ -8,12 +8,9 @@
   const defaults = Object.freeze({ seed: '林间' });
   const paperColor = [246, 231, 203];
   const inkColor = [24, 61, 35];
-  const positions = [
-    { x: 274, y: 318, size: 480, angle: -0.11 },
-    { x: 750, y: 613, size: 452, angle: 0.02 },
-    { x: 260, y: 1012, size: 438, angle: -0.04 },
-    { x: 755, y: 1220, size: 414, angle: 0.24 },
-  ];
+  const rows = 6;
+  const columnOffsets = [-18, 20, -14, 17];
+  const columns = columnOffsets.length;
   const surfaceCache = new WeakMap();
   const pathCache = new WeakMap();
 
@@ -37,25 +34,24 @@
 
   function createStampLayout(seed) {
     seed = normalizeSeed(seed);
-    if (seed === defaults.seed) {
-      return positions.map((position, index) => ({ ...position, motif: motifs[index] }));
-    }
-
     const random = randomFrom(seed + '|layout');
     // A motif ID pins the first stamp so every design can be found directly.
-    const first = motifs.find(motif => motif.id === seed);
-    const pool = motifs.filter(motif => motif !== first);
-    const chosen = first ? [first] : [];
-    while (chosen.length < positions.length) {
+    const chosen = seed === defaults.seed ? motifs.slice(0, 4) : motifs.filter(motif => motif.id === seed);
+    const pool = motifs.filter(motif => !chosen.includes(motif));
+    while (chosen.length < rows * columns) {
       chosen.push(pool.splice(Math.floor(random() * pool.length), 1)[0]);
     }
-    return positions.map((position, index) => ({
-      motif: chosen[index],
-      x: position.x + (random() - 0.5) * 30,
-      y: position.y + (random() - 0.5) * 56,
-      size: position.size * (0.93 + random() * 0.13),
-      angle: position.angle + (random() - 0.5) * 0.28,
-    }));
+    return chosen.map((motif, index) => {
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      return {
+        motif,
+        x: 169 + 229 * column + (random() - 0.5) * 18,
+        y: 206 + 225 * row + columnOffsets[column] + (random() - 0.5) * 20,
+        size: 164 + random() * 22,
+        angle: (random() - 0.5) * 0.32,
+      };
+    });
   }
 
   function noiseField(random, columns, rows) {

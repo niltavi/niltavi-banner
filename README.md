@@ -4,10 +4,10 @@
 
 Niltavi Banner is a seeded artwork generator for Niltavi projects. It runs offline in a modern browser.
 
-Open [Geometric Screenprint](index.html) for a four-color poster of 24 geometric motifs. Open [Folk Rubber Stamps](stamps.html) for four staggered dark-green impressions on textured paper. The default stamp seed `林间` prints a ginkgo leaf, a snail, a mushroom, and an acorn. Enter an ID from the [50-motif catalog](docs/stamp-motifs.md) to place that motif first.
+Open [Geometric Screenprint](index.html) for a four-color poster of 24 geometric motifs. Open [Folk Rubber Stamps](stamps.html) for 24 dark-green impressions in six rows and four vertically staggered columns. The default stamp seed `林间` begins with a ginkgo leaf, a snail, a mushroom, and an acorn. Enter an ID from the [50-motif catalog](docs/stamp-motifs.md) to place that motif first.
 
 <img src="docs/assets/generator-preview.png" width="360" alt="Geometric screenprint preview with seed 2564 and a four-column, six-row poster" />
-<img src="docs/assets/stamp-preview.webp" width="360" alt="Folk rubber stamp preview with a ginkgo leaf, snail, mushroom and acorn printed in dark green on warm paper" />
+<img src="docs/assets/stamp-preview.webp" width="360" alt="Folk rubber stamp preview with six rows and four staggered columns of dark-green stamps" />
 
 See the [integration guide](docs/en/for-agents.md) to use either renderer from code or run the checks.
 

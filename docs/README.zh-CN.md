@@ -8,7 +8,7 @@ Niltavi Banner 为 Niltavi 项目生成带丝网印刷肌理的几何图案。�
 
 <img src="assets/generator-preview.png" width="530" alt="Niltavi Banner 预览，上方是种子和纹理控件，下方是四列六行的几何图案海报" />
 
-项目采用 [AGPL-3.0](../LICENSE) 许可。
+项目采用 [MIT](../LICENSE) 许可。
 
 <div>
 <a href="en/for-agents.md">For Agents</a>

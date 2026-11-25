@@ -8,7 +8,7 @@ Open [index.html](index.html) from a local checkout to try the generator and exp
 
 <img src="docs/assets/generator-preview.png" width="530" alt="Niltavi Banner preview with seed and texture controls above a four-column, six-row geometric poster" />
 
-Licensed under [AGPL-3.0](LICENSE).
+Licensed under [MIT](LICENSE).
 
 <div>
 <a href="docs/en/for-agents.md">For Agents</a>

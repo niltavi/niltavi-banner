@@ -18,7 +18,7 @@ drawPoster(canvas.getContext('2d', { willReadFrequently: true }), {
 });
 ```
 
-`wobble` and `grain` accept numbers from 0 to 100 and default to 48 and 56. The renderer supports any positive canvas dimensions with a 2:3 aspect ratio. Use `canvas.toBlob(callback, 'image/png')` to export the canvas. For predictable raster output, reuse the same renderer revision, browser and context settings. Antialiasing can vary across browsers.
+`wobble` and `grain` accept numbers from 0 to 100 and default to 48 and 56. `paper` takes any canvas colour for the background, cut-outs and grain, and defaults to `#faf3e3`. The renderer supports any positive canvas dimensions with a 2:3 aspect ratio. Use `canvas.toBlob(callback, 'image/png')` to export the canvas. For predictable raster output, reuse the same renderer revision, browser and context settings. Antialiasing can vary across browsers.
 
 `createPosterLayout(seed)` returns the motif plan in row order without requiring a canvas. Node scripts can import the plan with `require('./src/screenprint.js')`.
 

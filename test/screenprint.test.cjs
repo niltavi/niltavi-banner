@@ -33,3 +33,31 @@ test('drawing rejects dimensions outside the 2:3 format', () => {
   assert.throws(() => drawPoster({ canvas: { width, height: width } }), RangeError);
   assert.throws(() => drawPoster({ canvas: { width: 0, height: 0 } }), RangeError);
 });
+
+function recordingContext() {
+  const fills = new Set();
+  const context = new Proxy({ canvas: { width, height } }, {
+    get(target, key) {
+      if (key in target) return target[key];
+      return () => {};
+    },
+    set(target, key, value) {
+      if (key === 'fillStyle' || key === 'strokeStyle') fills.add(value);
+      target[key] = value;
+      return true;
+    },
+  });
+  return { context, fills };
+}
+
+test('paper colour defaults to the cream stock and can be replaced', () => {
+  globalThis.Path2D ??= class { moveTo() {} lineTo() {} closePath() {} };
+  const standard = recordingContext();
+  drawPoster(standard.context, { seed: '1300j89' });
+  assert.ok(standard.fills.has(defaults.paper));
+
+  const custom = recordingContext();
+  drawPoster(custom.context, { seed: '1300j89', paper: '#f5f1e6' });
+  assert.ok(custom.fills.has('#f5f1e6'));
+  assert.ok(!custom.fills.has(defaults.paper));
+});
